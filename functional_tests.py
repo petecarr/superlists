@@ -21,7 +21,7 @@ class NewVisitorTest(unittest.TestCase):
       #print("Title is :" + self.browser.title)
       self.assertIn('To-Do', self.browser.title) 
       header_text = self.browser.find_element_by_tag_name('h1').text
-      print(header_text + '\n')
+      #print(header_text + '\n')
       self.assertIn('To-Do', header_text) 
 
       # User is invited to enter a to-do item straight away
@@ -31,8 +31,8 @@ class NewVisitorTest(unittest.TestCase):
 	     'Enter a to-do item'
 	     )
 
-      # User types "Buy Peacock feathers" into a text box. 
-      #(Everyone needs Peacock feathers)
+      # User types "Buy peacock feathers" into a text box. 
+      #(Everyone needs peacock feathers)
       inputbox.send_keys('Buy peacock feathers')
 
       # When user hits enter, the page updates, and now the page lists
@@ -41,15 +41,24 @@ class NewVisitorTest(unittest.TestCase):
 
       table = self.browser.find_element_by_id('id_list_table')
       rows = table.find_elements_by_tag_name('tr')
-      self.assertTrue(
-             any(row.text == '1: Buy peacock feathers' for row in rows),
-	     "New to-do item did not appear in table"
-	     )
+      self.assertIn(
+             '1: Buy peacock feathers', [row.text for row in rows])
 
       # There is still a text box inviting the user to add another item. 
       # Enters "Use Peacock feathers to make a fly"
+      inputbox = self.browser.find_element_by_id('id_new_item')
+      inputbox.send_keys('Use peacock feathers to make a fly')
+      inputbox.send_keys(Keys.ENTER)
 
       # Page updates again, and now shows both items on the list.
+      table = self.browser.find_element_by_id('id_list_table')
+      rows = table.find_elements_by_tag_name('tr')
+      self.assertIn(
+             '1: Buy peacock feathers', [row.text for row in rows])
+      self.assertIn(
+             '2: Use peacock feathers to make a fly', 
+	     [row.text for row in rows])
+
 
       # User wonders whether the site will remember her list. Then she sees
       # that the site has generated a unique URL for her -- there is some 
