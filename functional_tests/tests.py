@@ -1,8 +1,9 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
    def setUp(self):
       self.browser = webdriver.Firefox()
@@ -21,7 +22,7 @@ class NewVisitorTest(unittest.TestCase):
 
       # User has heard about a cool new online to-do app. Goes
       # to check out its home page.
-      self.browser.get('http://localhost:8000')
+      self.browser.get(self.live_server_url)
 
       # Notices the page title and header mention to-do lists
       #print("Title is :" + self.browser.title)
@@ -44,11 +45,8 @@ class NewVisitorTest(unittest.TestCase):
       # When user hits enter, the page updates, and now the page lists
       # 1. "Buy peacock feathers" as an item in a to-do list.
       inputbox.send_keys(Keys.ENTER)
+      self.check_for_row_in_list_table('1: Buy peacock feathers')
 
-      table = self.browser.find_element_by_id('id_list_table')
-      rows = table.find_elements_by_tag_name('tr')
-      self.assertIn(
-             '1: Buy peacock feathers', [row.text for row in rows])
 
       # There is still a text box inviting the user to add another item. 
       # Enters "Use Peacock feathers to make a fly"
@@ -57,8 +55,8 @@ class NewVisitorTest(unittest.TestCase):
       inputbox.send_keys(Keys.ENTER)
 
       # Page updates again, and now shows both items on the list.
-      self.check_for_row_in_list_table('1: Buy peacock feathers')
       self.check_for_row_in_list_table('2: Use peacock feathers to make a fly') 
+      self.check_for_row_in_list_table('1: Buy peacock feathers')
 
 
       # User wonders whether the site will remember her list. Then she sees
@@ -70,5 +68,3 @@ class NewVisitorTest(unittest.TestCase):
       # Satisfied sho goes back to sleep.
       self.fail('Finish the test!')
 
-if __name__ == '__main__': #
-   unittest.main(warnings='ignore') #
