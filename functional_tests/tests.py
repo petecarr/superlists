@@ -7,7 +7,7 @@ class NewVisitorTest(LiveServerTestCase):
 
    def setUp(self):
       self.browser = webdriver.Firefox()
-      self.browser.implicitly_wait(3)
+      self.browser.implicitly_wait(10)
 
    def tearDown(self):
       self.browser.quit()
@@ -91,5 +91,5 @@ class NewVisitorTest(LiveServerTestCase):
 
 
       # Satisfied they both goes back to sleep.
-      self.fail('Finish the test!')
+      #self.fail('Finish the test!')
 
